@@ -1,0 +1,48 @@
+April's Code Share: Faster than standard?
+
+The standard libraries that come with modern languages provide most of the data structures and many of the common algorithms that are typically taught in computer science courses. How often do you really think of the characteristics of the collections you are using or do you always default to java.util.ArrayList and java.util.HashMap? Do you ever wonder what is the most appropriate sorting algorithm for the data you are processing?
+
+This months challenge is to implement a sorted map (note you don’t need to implement the SortedMap interface though, only Map) without using any of the standard java collections or algorithms. You may only use arrays, scalar types and classes you have implemented yourself. Once you have your map implementation you need to use it to implement the following three operations as efficiently as you can without looking at the source code of the java standard library.
+
+You'll find the word list in src/test/resources/word-list.txt
+
+The first part of the challenge is to read the contents of the file wordlist.txt in order into your Map implementation with the words being he keys to the map and the initial value being zero.
+
+In order to avoid timing file operations you should first read all the words into one of the standard collections provided by your language (eg ArrayList) and then time how long it takes to copy the words into your Map<String,Integer> implementation.
+
+The second part of the challenge is to read the entire contents of the text file src/test/resources/the-skull.txt (including Gutenberg prefix and suffix) and for each word in the text file retrieve the count from your map and increment it by one. The end result should be your map of English words containing the count of each word in the file (and zero for all words not encountered in the file). Any words in the text file that were not in the initial word list (ie are not in map already) should be ignored. Again to avoid including the time for file operations in your times you should load the text file into a string first and then time the process of iterating through the words in the string and incrementing the count.
+
+Finally, you should produce a list of the word counts sorted (alphabetically, ascending) by word. If using Java the result should be contained in a java.util.ArrayList<WordCount> where WordCount is the following class:
+
+public class WordCount {
+   public final String word;
+   public final int count;
+
+   public WordCount(String w, int c) {
+       this.word = w;
+       this.count = c;
+   }
+}
+
+We aim  to provide a common test harness in Java which will provide the word list and text file so you should implement the operations described above by implementing the interface Benchmark (below) and providing a no-argument constructor:
+
+package org.ljc.april2012;
+
+import java.util.ArrayList;
+import java.util.Map;
+
+public interface Benchmark {
+
+   Map<String,Integer> loadWords(ArrayList<String> words);
+   
+   void addWordCounts(Map<String,Integer> words, String text);
+   
+   ArrayList<WordCount> getCounts(Map<String,Integer> words);
+}
+
+If using a language other than java you are free to implement your own equivalents of WordCount and Benchmark.
+
+If we have the time we’ll stage a contest comparing the performance of each implementation.
+
+run mvn install to build the project
+you can test your implementation by running CaliperRunner and passing the names of your class(es) that implements Benchmark as arguments.
