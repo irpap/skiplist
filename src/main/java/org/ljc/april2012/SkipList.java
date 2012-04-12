@@ -36,7 +36,7 @@ public class SkipList<T> {
     private void insertAndMaybePromote(T value, LinkedList<SkipListNode> possiblePromotions, SkipListNode lastNodeICreated) {
         SkipListNode newNode = new SkipListNode(value);
         if (possiblePromotions.isEmpty()) {
-            SkipListNode newTop = createSingletonList(newNode);
+            SkipListNode newTop = createSingletonList(newNode, lastNodeICreated);
             promoteToToplist(newTop);
         } else {
             SkipListNode nodeToInsertAfter = possiblePromotions.pop();
@@ -51,29 +51,33 @@ public class SkipList<T> {
                 next.prev = newNode;
             }
             //vertical
-            SkipListNode below = lastNodeICreated;
-            if (below != null) {
-                below.up = newNode;
-                newNode.down = below;
-                System.out.println("inserting " + newNode + " on top of " + below);
-            } else System.out.println("below was null");
-
+            linkToNodeBelow(newNode, lastNodeICreated);
         }
         if (flipCoin()) {
             insertAndMaybePromote(value, possiblePromotions, newNode);
         }
     }
+   private void linkToNodeBelow(SkipListNode newNode, SkipListNode below) {
+       if (below != null) {
+           below.up = newNode;
+           newNode.down = below;
+           System.out.println("inserting " + newNode + " on top of " + below);
+       }                 else System.out.println("below was null");
 
+   }
     private void promoteToToplist(SkipListNode newTop) {
         newTop.down = topList;
         topList.up = newTop;
         topList = newTop;
     }
 
-    private SkipListNode createSingletonList(SkipListNode newNode) {
+    private SkipListNode createSingletonList(SkipListNode newNode,SkipListNode below) {
         SkipListNode newTop = new SkipListNode((T) MINUS_INFINITY);
         newTop.next = newNode;
         newNode.prev = newTop;
+
+        linkToNodeBelow(newNode, below);
+
         return newTop;
     }
 
