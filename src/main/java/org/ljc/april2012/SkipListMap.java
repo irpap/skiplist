@@ -63,8 +63,14 @@ public class SkipListMap<K, V> implements Map<K, V> {
      */
     @Override
     public final V put(final K key, final V value) {
-        skipList.add(new SkipListMapEntry<K, V>(key, value));
-        return value;
+        SkipListMapEntry<K, V> newEntry = new SkipListMapEntry<K, V>(key, value);
+        SkipListMapEntry oldEntry = skipList.find(newEntry);
+        if (oldEntry != null) {
+            skipList.updateValue(oldEntry, newEntry);
+            return (V) oldEntry.getValue();
+        }
+        skipList.add(newEntry);
+        return null;
     }
 
     @Override

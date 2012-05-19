@@ -86,10 +86,6 @@ public class SkipList<T> {
         return promotions;
     }
 
-    private void setValue(SkipListNode topNode, T t) {
-        updateAllTheWayDown(topNode, t);
-    }
-
     private void updateAllTheWayDown(SkipListNode current, T value) {
         while (current != null) {
             current.entryValue = value;
@@ -123,7 +119,11 @@ public class SkipList<T> {
         return foundNode == null ? null : foundNode.entryValue;
 
     }
+    public void updateValue(T oldValue, T newValue) {
+        SkipListNode highestLevelNodeWithValue = findHighestLevelNodeWithValue(oldValue);
+        updateAllTheWayDown(highestLevelNodeWithValue, newValue);
 
+    }
     private void removeAllTheWayDown(SkipListNode node) {
         if (node == null || node.prev == null) return;
         SkipListNode prev = node.prev;
@@ -194,6 +194,8 @@ public class SkipList<T> {
     public void clear() {
         topList = bottomList = new SkipListNode((T) MINUS_INFINITY);
     }
+
+
 
     class SkipListNode {
         T entryValue;
