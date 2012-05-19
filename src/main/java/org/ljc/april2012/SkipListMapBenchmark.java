@@ -14,8 +14,7 @@ public class SkipListMapBenchmark implements Benchmark {
     public Map<String, Integer> loadWords(ArrayList<String> words) {
         SkipListMap<String, Integer> map = new SkipListMap<String, Integer>(
                 String.CASE_INSENSITIVE_ORDER);
-        List<String> sublist = words.subList(0, 1000);
-        for (String w : sublist) {
+        for (String w : words) {
             map.put(w, 0);
         }
         return map;
