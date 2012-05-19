@@ -1,7 +1,6 @@
 package org.ljc.april2012;
 
 import com.google.caliper.Runner;
-
 public class CaliperRunner {
 
 
