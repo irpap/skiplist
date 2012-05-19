@@ -13,22 +13,21 @@ public class Main {
         map.put("c", 1);
         map.put("e", 1);
 
-		map.put("b", 2);
-        map.put("d", 2);
-        map.put("e", 2);
-        map.put("a", 2);
-        map.put("c", 2);
-        map.put("f", 2);
-
-        map.put("d", 200);
-        map.put("e", 200);
-        map.put("a", 200);
-        map.put("f", 200);
-        map.put("b", 200);
-//        map.put("c", 200);
-        printAll(map);
-        map.uglyPrint();
-
+//		map.put("b", 2);
+//        map.put("d", 2);
+//        map.put("e", 2);
+//        map.put("a", 2);
+//        map.put("c", 2);
+//        map.put("f", 2);
+//
+//        map.put("d", 200);
+//        map.put("e", 200);
+//        map.put("a", 200);
+//        map.put("f", 200);
+//        map.put("b", 200);
+////        map.put("c", 200);
+//        printAll(map);
+//        map.uglyPrint();
 
     }
 

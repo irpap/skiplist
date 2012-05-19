@@ -18,17 +18,16 @@ public class SkipList<T> {
      * Adds the element to the bottom list and repeatedly flips a coin to decide
      * whether to promote it a level up
      */
-    final boolean add(final T t) {
+    public final boolean add(final T t) {
         SkipListNode newNode = new SkipListNode(t);
-        SkipListNode topNodeWithValue = findTopNodeWithValue(topList, t);
-        //caller should do this instead TODO
-        if (topNodeWithValue != null) {
-            setValue(topNodeWithValue, t);
-            return true;
-        }
 
-        LinkedList<SkipListNode> possiblePromotions = findPromotionPathToImmediatelySmallerNode(topList, newNode, new LinkedList<SkipListNode>());
-
+        LinkedList<SkipListNode> possiblePromotions = pathFromTopToImmediatelySmallerBottomNode(newNode);
+        System.out.println("About to insert: " + newNode);
+        System.out.println("state of skiplist: ");
+        uglyPrint();
+        System.out.print("Possible promotions: ");
+        for (SkipListNode node : possiblePromotions) System.out.print(node + " ");
+        System.out.println();
         insertAndMaybePromote(newNode.entryValue, possiblePromotions, null);
         return true;
     }
@@ -40,7 +39,6 @@ public class SkipList<T> {
             promoteToToplist(newTop);
         } else {
             SkipListNode nodeToInsertAfter = possiblePromotions.pop();
-            System.out.println("inserting/promoting new node " + value + "after " + nodeToInsertAfter);
             //horizontal
             SkipListNode next = nodeToInsertAfter.next;
 
@@ -57,21 +55,21 @@ public class SkipList<T> {
             insertAndMaybePromote(value, possiblePromotions, newNode);
         }
     }
-   private void linkToNodeBelow(SkipListNode newNode, SkipListNode below) {
-       if (below != null) {
-           below.up = newNode;
-           newNode.down = below;
-           System.out.println("inserting " + newNode + " on top of " + below);
-       }                 else System.out.println("below was null");
 
-   }
+    private void linkToNodeBelow(SkipListNode newNode, SkipListNode below) {
+        if (below != null) {
+            below.up = newNode;
+            newNode.down = below;
+        }
+    }
+
     private void promoteToToplist(SkipListNode newTop) {
         newTop.down = topList;
         topList.up = newTop;
         topList = newTop;
     }
 
-    private SkipListNode createSingletonList(SkipListNode newNode,SkipListNode below) {
+    private SkipListNode createSingletonList(SkipListNode newNode, SkipListNode below) {
         SkipListNode newTop = new SkipListNode((T) MINUS_INFINITY);
         newTop.next = newNode;
         newNode.prev = newTop;
@@ -85,14 +83,13 @@ public class SkipList<T> {
         return random.nextBoolean();
     }
 
-    private LinkedList findPromotionPathToImmediatelySmallerNode(SkipListNode list, SkipListNode node, LinkedList<SkipListNode> promotions) {
+    private LinkedList pathFromTopToImmediatelySmallerBottomNode(SkipListNode node) {
+        SkipListNode list = topList;
+        LinkedList<SkipListNode> promotions = new LinkedList<SkipListNode>();
         while (list != null) {
-            if (list.next == null || compare(list.next.entryValue, node.entryValue) > 0) {
-                promotions.push(list);
-                System.out.println("pushing " + list);
-                findPromotionPathToImmediatelySmallerNode(list.down, node, promotions);
-            }
-            list = list.next;
+            while (list.next != null && compare(list.next.entryValue, node.entryValue) <= 0) list = list.next;
+            promotions.push(list);
+            list = list.down;
         }
         return promotions;
     }
@@ -114,30 +111,6 @@ public class SkipList<T> {
             current = current.down;
         }
     }
-
-//    private SkipListNode promoteMaybe(SkipListNode nodeBelow,
-//                                      SkipListNode mostLeftNode) {
-//
-//        while (true) {
-//            if (random.nextBoolean())
-//                return mostLeftNode;
-//            SkipListNode newNode = new SkipListNode(nodeBelow.entryValue);
-//            newNode.down = nodeBelow;
-//            nodeBelow.up = newNode;
-//
-//            SkipListNode onTopOfMostLeft = mostLeftNode.up;
-//            if (onTopOfMostLeft == null) {
-//                onTopOfMostLeft = new SkipListNode((T) MINUS_INFINITY);
-//                mostLeftNode.up = onTopOfMostLeft;
-//                onTopOfMostLeft.down = mostLeftNode;
-//            }
-//            addToSingleList(onTopOfMostLeft, newNode);
-//
-//            nodeBelow = newNode;
-//            mostLeftNode = onTopOfMostLeft;
-//
-//        }
-//    }
 
     final boolean remove(final T t) {
 
@@ -208,7 +181,7 @@ public class SkipList<T> {
         return bottomList.next == null;
     }
 
-    final Iterator<T> iterator() {
+    public final Iterator<T> iterator() {
         return new Iterator<T>() {
             SkipListNode currentNode = bottomList;
 
@@ -232,7 +205,7 @@ public class SkipList<T> {
         };
     }
 
-    final int compare(final Object o1, Object o2) {
+    final int compare(final T o1, T o2) {
         if (o1 == MINUS_INFINITY) {
             return -1;
         } else if (o2 == MINUS_INFINITY) {
@@ -246,7 +219,7 @@ public class SkipList<T> {
         topList = bottomList = new SkipListNode((T) MINUS_INFINITY);
     }
 
-    private class SkipListNode {
+    class SkipListNode {
         T entryValue;
         SkipListNode up;
         SkipListNode down;
@@ -262,7 +235,7 @@ public class SkipList<T> {
         }
     }
 
-    void uglyPrint() {
+    public void uglyPrint() {
         SkipListNode list = topList;
         while (list != null) {
             printList(list);
@@ -274,7 +247,7 @@ public class SkipList<T> {
     private void printList(SkipListNode list) {
         SkipListNode current = list.next;
         while (current != null) {
-            System.out.print(((SkipListMapEntry) current.entryValue).getKey() + "  ");
+            System.out.print(current.entryValue + "  ");
             current = current.next;
         }
         System.out.println();
