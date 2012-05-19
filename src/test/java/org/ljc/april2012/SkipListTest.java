@@ -1,5 +1,6 @@
+package org.ljc.april2012;
+
 import org.junit.Test;
-import org.ljc.april2012.SkipList;
 
 import java.util.Comparator;
 import java.util.Iterator;
