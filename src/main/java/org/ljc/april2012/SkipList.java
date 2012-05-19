@@ -72,7 +72,7 @@ public class SkipList<T> {
     }
 
     private boolean flipCoin() {
-        return random.nextBoolean();
+        return random.nextBoolean()  && random.nextBoolean();
     }
 
     private LinkedList pathFromTopToImmediatelySmallerBottomNode(SkipListNode node) {
