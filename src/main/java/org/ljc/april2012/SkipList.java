@@ -20,14 +20,7 @@ public class SkipList<T> {
      */
     public final boolean add(final T t) {
         SkipListNode newNode = new SkipListNode(t);
-
         LinkedList<SkipListNode> possiblePromotions = pathFromTopToImmediatelySmallerBottomNode(newNode);
-        System.out.println("About to insert: " + newNode);
-        System.out.println("state of skiplist: ");
-        uglyPrint();
-        System.out.print("Possible promotions: ");
-        for (SkipListNode node : possiblePromotions) System.out.print(node + " ");
-        System.out.println();
         insertAndMaybePromote(newNode.entryValue, possiblePromotions, null);
         return true;
     }
@@ -38,17 +31,16 @@ public class SkipList<T> {
             SkipListNode newTop = createSingletonList(newNode, lastNodeICreated);
             promoteToToplist(newTop);
         } else {
+            //horizontal insertion
             SkipListNode nodeToInsertAfter = possiblePromotions.pop();
-            //horizontal
             SkipListNode next = nodeToInsertAfter.next;
-
             nodeToInsertAfter.next = newNode;
             newNode.prev = nodeToInsertAfter;
             newNode.next = next;
             if (next != null) {
                 next.prev = newNode;
             }
-            //vertical
+            //vertical insertion
             linkToNodeBelow(newNode, lastNodeICreated);
         }
         if (flipCoin()) {
@@ -98,13 +90,6 @@ public class SkipList<T> {
         updateAllTheWayDown(topNode, t);
     }
 
-    private void updateAllTheWayUp(SkipListNode current, T value) {
-        while (current != null) {
-            current.entryValue = value;
-            current = current.up;
-        }
-    }
-
     private void updateAllTheWayDown(SkipListNode current, T value) {
         while (current != null) {
             current.entryValue = value;
@@ -112,9 +97,9 @@ public class SkipList<T> {
         }
     }
 
-    final boolean remove(final T t) {
+    public final boolean remove(final T t) {
 
-        SkipListNode foundElement = findTopNodeWithValue(topList, t);
+        SkipListNode foundElement = findHighestLevelNodeWithValue(t);
         removeAllTheWayDown(foundElement);
         return foundElement != null;
     }
@@ -123,27 +108,18 @@ public class SkipList<T> {
      * Returns the highest-level node with the specified value if found, or
      * null.
      */
-    private SkipListNode findTopNodeWithValue(final SkipListNode list, final T t) {
-        SkipListNode current = list;
-
-        // Keep going while the elements are smaller than the value we
-        // search for
-        while ((current.next != null) && (compare(t, current.entryValue) > 0)) {
-            current = current.next;
+    private SkipListNode findHighestLevelNodeWithValue(final T t) {
+        SkipListNode list = topList;
+        while (list != null) {
+            while (list.next != null && compare(list.next.entryValue, t) <= 0) list = list.next;
+            if (compare(list.entryValue, t) == 0) return list;
+            list = list.down;
         }
-        // Here current is either equal or greater than the value we search for
-        if (compare(t, current.entryValue) == 0) {
-            return current;
-        }
-        // Go to the list below via the previous node
-        if (current.prev == null || current.prev.down == null)
-            return null;
-
-        return findTopNodeWithValue(current.prev.down, t);
+        return null;
     }
 
     public final T find(final T t) {
-        SkipListNode foundNode = findTopNodeWithValue(topList, t);
+        SkipListNode foundNode = findHighestLevelNodeWithValue(t);
         return foundNode == null ? null : foundNode.entryValue;
 
     }
@@ -156,8 +132,8 @@ public class SkipList<T> {
         removeAllTheWayDown(node.down);
     }
 
-    final boolean contains(final Object t) {
-        SkipListNode foundElement = findTopNodeWithValue(topList, (T) t);
+    public final boolean contains(final Object t) {
+        SkipListNode foundElement = findHighestLevelNodeWithValue((T) t);
         return foundElement == null ? false : true;
     }
 

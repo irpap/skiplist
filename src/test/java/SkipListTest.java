@@ -1,9 +1,10 @@
-import org.fest.assertions.Assertions;
 import org.junit.Test;
 import org.ljc.april2012.SkipList;
 
 import java.util.Comparator;
 import java.util.Iterator;
+
+import static org.fest.assertions.Assertions.assertThat;
 
 public class SkipListTest {
     @Test
@@ -17,7 +18,7 @@ public class SkipListTest {
         skipList.add(1);
         Iterator<Integer> iterator = skipList.iterator();
         Integer next = iterator.next();
-        Assertions.assertThat(next).isEqualTo(1);
+        assertThat(next).isEqualTo(1);
     }
 
     @Test
@@ -36,11 +37,58 @@ public class SkipListTest {
         skipList.add(3);
         skipList.uglyPrint();
         Iterator<Integer> iterator = skipList.iterator();
-        Assertions.assertThat(iterator.next()).isEqualTo(1);
-        Assertions.assertThat(iterator.next()).isEqualTo(2);
-        Assertions.assertThat(iterator.next()).isEqualTo(3);
-        Assertions.assertThat(iterator.next()).isEqualTo(4);
-        Assertions.assertThat(iterator.next()).isEqualTo(5);
-        Assertions.assertThat(iterator.next()).isEqualTo(6);
+        assertThat(iterator.next()).isEqualTo(1);
+        assertThat(iterator.next()).isEqualTo(2);
+        assertThat(iterator.next()).isEqualTo(3);
+        assertThat(iterator.next()).isEqualTo(4);
+        assertThat(iterator.next()).isEqualTo(5);
+        assertThat(iterator.next()).isEqualTo(6);
+    }
+
+    @Test
+    public void searchList() {
+        SkipList<Integer> skipList = new SkipList<Integer>(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o1.compareTo(o2);
+            }
+        });
+        skipList.add(1);
+        skipList.add(5);
+        skipList.add(2);
+        skipList.add(4);
+        skipList.add(6);
+        skipList.add(3);
+        assertThat(skipList.contains(3)).isEqualTo(true);
+        assertThat(skipList.contains(1)).isEqualTo(true);
+        assertThat(skipList.contains(2)).isEqualTo(true);
+        assertThat(skipList.contains(5)).isEqualTo(true);
+        assertThat(skipList.contains(6)).isEqualTo(true);
+        assertThat(skipList.contains(4)).isEqualTo(true);
+        assertThat(skipList.contains(22)).isEqualTo(false);
+        assertThat(skipList.contains(8)).isEqualTo(false);
+    }
+
+    @Test
+    public void removeElement() {
+        SkipList<Integer> skipList = new SkipList<Integer>(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o1.compareTo(o2);
+            }
+        });
+        skipList.add(1);
+        skipList.add(5);
+        skipList.add(2);
+        skipList.add(4);
+        skipList.add(6);
+        skipList.add(3);
+        assertThat(skipList.contains(3)).isEqualTo(true);
+        assertThat(skipList.remove(3)).isEqualTo(true);
+        assertThat(skipList.contains(3)).isEqualTo(false);
+
+        assertThat(skipList.contains(1)).isEqualTo(true);
+        assertThat(skipList.remove(1)).isEqualTo(true);
+        assertThat(skipList.contains(1)).isEqualTo(false);
     }
 }
