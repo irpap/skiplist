@@ -128,7 +128,7 @@ public class SkipList<T> {
         if (node == null || node.prev == null) return;
         SkipListNode prev = node.prev;
         prev.next = node.next;
-        node.next.prev = prev;
+        if (node.next != null) node.next.prev = prev;
         removeAllTheWayDown(node.down);
     }
 
