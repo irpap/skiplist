@@ -58,9 +58,6 @@ public class SkipListMap<K, V> implements Map<K, V> {
         return skipListMapEntry == null ? null : (V) skipListMapEntry.getValue();
     }
 
-    /**
-     * Does not really return the previous value
-     */
     @Override
     public final V put(final K key, final V value) {
         SkipListMapEntry<K, V> newEntry = new SkipListMapEntry<K, V>(key, value);
@@ -109,7 +106,4 @@ public class SkipListMap<K, V> implements Map<K, V> {
         return skipList.iterator();
     }
 
-    public void uglyPrint() {
-        skipList.uglyPrint();
-    }
 }

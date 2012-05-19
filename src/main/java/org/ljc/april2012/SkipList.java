@@ -72,7 +72,7 @@ public class SkipList<T> {
     }
 
     private boolean flipCoin() {
-        return random.nextBoolean()  && random.nextBoolean();
+        return random.nextBoolean() && random.nextBoolean();
     }
 
     private LinkedList pathFromTopToImmediatelySmallerBottomNode(SkipListNode node) {
@@ -119,11 +119,13 @@ public class SkipList<T> {
         return foundNode == null ? null : foundNode.entryValue;
 
     }
+
     public void updateValue(T oldValue, T newValue) {
         SkipListNode highestLevelNodeWithValue = findHighestLevelNodeWithValue(oldValue);
         updateAllTheWayDown(highestLevelNodeWithValue, newValue);
 
     }
+
     private void removeAllTheWayDown(SkipListNode node) {
         if (node == null || node.prev == null) return;
         SkipListNode prev = node.prev;
@@ -194,7 +196,6 @@ public class SkipList<T> {
     public void clear() {
         topList = bottomList = new SkipListNode((T) MINUS_INFINITY);
     }
-
 
 
     class SkipListNode {

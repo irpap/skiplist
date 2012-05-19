@@ -15,7 +15,7 @@ public class TreeMapBenchmark implements Benchmark {
 		for (String w : words) {
             System.err.println(w);
 
-			map.put(w, new Integer(0));
+			map.put(w, 0);
 		}
 		return map;
 	}
@@ -26,7 +26,7 @@ public class TreeMapBenchmark implements Benchmark {
 		for (String t : textWords) {
 			Integer count = words.get(t);
 			if (null != count) {
-				words.put(t, new Integer(count.intValue() + 1));
+				words.put(t, count.intValue() + 1);
 			}
 		}
 	}
