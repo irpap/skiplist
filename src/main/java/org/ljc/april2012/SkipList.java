@@ -33,7 +33,7 @@ public class SkipList<T> {
         } else {
             //horizontal insertion
             SkipListNode nodeToInsertAfter = possiblePromotions.pop();
-            SkipListNode next = linkToPreviousNode(newNode, nodeToInsertAfter);
+            linkToPreviousNode(newNode, nodeToInsertAfter);
             //vertical insertion
             linkToNodeBelow(newNode, lastCreatedNode);
         }
@@ -43,13 +43,12 @@ public class SkipList<T> {
         }
     }
 
-    private SkipListNode linkToPreviousNode(final SkipListNode newNode, final SkipListNode nodeToInsertAfter) {
+    private void linkToPreviousNode(final SkipListNode newNode, final SkipListNode nodeToInsertAfter) {
         SkipListNode next = nodeToInsertAfter.next;
         nodeToInsertAfter.next = newNode;
         newNode.prev = nodeToInsertAfter;
         newNode.next = next;
         if (next != null) next.prev = newNode;
-        return next;
     }
 
     private void linkToNodeBelow(final SkipListNode newNode, final SkipListNode below) {
