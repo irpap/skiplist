@@ -16,7 +16,7 @@ public class SkipList<T> {
 
     /**
      * Adds the element to the bottom list and repeatedly flips a coin to decide
-     * whether to promote it a level up
+     * whether to promote it a level up.
      */
     public final boolean add(final T t) {
         SkipListNode newNode = new SkipListNode(t);
@@ -25,7 +25,7 @@ public class SkipList<T> {
         return true;
     }
 
-    private void insertAndMaybePromote(T value, LinkedList<SkipListNode> possiblePromotions, SkipListNode lastNodeICreated) {
+    private void insertAndMaybePromote(T value, final LinkedList<SkipListNode> possiblePromotions, final SkipListNode lastNodeICreated) {
         SkipListNode newNode = new SkipListNode(value);
         if (possiblePromotions.isEmpty()) {
             SkipListNode newTop = createSingletonList(newNode, lastNodeICreated);
@@ -48,20 +48,20 @@ public class SkipList<T> {
         }
     }
 
-    private void linkToNodeBelow(SkipListNode newNode, SkipListNode below) {
+    private void linkToNodeBelow(final SkipListNode newNode, final SkipListNode below) {
         if (below != null) {
             below.up = newNode;
             newNode.down = below;
         }
     }
 
-    private void promoteToToplist(SkipListNode newTop) {
+    private void promoteToToplist(final SkipListNode newTop) {
         newTop.down = topList;
         topList.up = newTop;
         topList = newTop;
     }
 
-    private SkipListNode createSingletonList(SkipListNode newNode, SkipListNode below) {
+    private SkipListNode createSingletonList(final SkipListNode newNode, final SkipListNode below) {
         SkipListNode newTop = new SkipListNode((T) MINUS_INFINITY);
         newTop.next = newNode;
         newNode.prev = newTop;
@@ -75,7 +75,7 @@ public class SkipList<T> {
         return random.nextBoolean() && random.nextBoolean();
     }
 
-    private LinkedList pathFromTopToImmediatelySmallerBottomNode(SkipListNode node) {
+    private LinkedList<SkipListNode> pathFromTopToImmediatelySmallerBottomNode(SkipListNode node) {
         SkipListNode list = topList;
         LinkedList<SkipListNode> promotions = new LinkedList<SkipListNode>();
         while (list != null) {
@@ -86,7 +86,7 @@ public class SkipList<T> {
         return promotions;
     }
 
-    private void updateAllTheWayDown(SkipListNode current, T value) {
+    private void updateAllTheWayDown( SkipListNode current, final T value) {
         while (current != null) {
             current.entryValue = value;
             current = current.down;
@@ -120,7 +120,7 @@ public class SkipList<T> {
 
     }
 
-    public void updateValue(T oldValue, T newValue) {
+    final public void updateValue(T oldValue, T newValue) {
         SkipListNode highestLevelNodeWithValue = findHighestLevelNodeWithValue(oldValue);
         updateAllTheWayDown(highestLevelNodeWithValue, newValue);
 
@@ -136,7 +136,7 @@ public class SkipList<T> {
 
     public final boolean contains(final Object t) {
         SkipListNode foundElement = findHighestLevelNodeWithValue((T) t);
-        return foundElement == null ? false : true;
+        return foundElement != null;
     }
 
     /**
@@ -183,7 +183,7 @@ public class SkipList<T> {
         };
     }
 
-    final int compare(final T o1, T o2) {
+    final int compare(final T o1, final T o2) {
         if (o1 == MINUS_INFINITY) {
             return -1;
         } else if (o2 == MINUS_INFINITY) {
@@ -193,7 +193,7 @@ public class SkipList<T> {
         }
     }
 
-    public void clear() {
+    public final void clear() {
         topList = bottomList = new SkipListNode((T) MINUS_INFINITY);
     }
 
@@ -214,7 +214,7 @@ public class SkipList<T> {
         }
     }
 
-    public void uglyPrint() {
+    public final void uglyPrint() {
         SkipListNode list = topList;
         while (list != null) {
             printList(list);
@@ -223,7 +223,7 @@ public class SkipList<T> {
         System.out.println();
     }
 
-    private void printList(SkipListNode list) {
+    private final void printList(SkipListNode list) {
         SkipListNode current = list.next;
         while (current != null) {
             System.out.print(current.entryValue + "  ");
