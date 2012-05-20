@@ -25,27 +25,33 @@ public class SkipList<T> {
         return true;
     }
 
-    private void insertAndMaybePromote(T value, final LinkedList<SkipListNode> possiblePromotions, final SkipListNode lastNodeICreated) {
+    private void insertAndMaybePromote(T value, final LinkedList<SkipListNode> possiblePromotions, final SkipListNode lastCreatedNode) {
         SkipListNode newNode = new SkipListNode(value);
         if (possiblePromotions.isEmpty()) {
-            SkipListNode newTop = createSingletonList(newNode, lastNodeICreated);
+            SkipListNode newTop = createSingletonList(newNode, lastCreatedNode);
             promoteToToplist(newTop);
-        } else {
-            //horizontal insertion
-            SkipListNode nodeToInsertAfter = possiblePromotions.pop();
-            SkipListNode next = nodeToInsertAfter.next;
-            nodeToInsertAfter.next = newNode;
-            newNode.prev = nodeToInsertAfter;
-            newNode.next = next;
-            if (next != null) {
-                next.prev = newNode;
-            }
-            //vertical insertion
-            linkToNodeBelow(newNode, lastNodeICreated);
+            return;
         }
+        //horizontal insertion
+        SkipListNode nodeToInsertAfter = possiblePromotions.pop();
+        SkipListNode next = linkToPreviousNode(newNode, nodeToInsertAfter);
+        if (next != null) next.prev = newNode;
+
+        //vertical insertion
+        linkToNodeBelow(newNode, lastCreatedNode);
+
+        //The node we just created will be the node below for the next promotion
         if (flipCoin()) {
             insertAndMaybePromote(value, possiblePromotions, newNode);
         }
+    }
+
+    private SkipListNode linkToPreviousNode(final SkipListNode newNode, final SkipListNode nodeToInsertAfter) {
+        SkipListNode next = nodeToInsertAfter.next;
+        nodeToInsertAfter.next = newNode;
+        newNode.prev = nodeToInsertAfter;
+        newNode.next = next;
+        return next;
     }
 
     private void linkToNodeBelow(final SkipListNode newNode, final SkipListNode below) {
@@ -86,7 +92,7 @@ public class SkipList<T> {
         return promotions;
     }
 
-    private void updateAllTheWayDown( SkipListNode current, final T value) {
+    private void updateAllTheWayDown(SkipListNode current, final T value) {
         while (current != null) {
             current.entryValue = value;
             current = current.down;

@@ -5,7 +5,7 @@ import java.util.Map;
 
 public interface Benchmark {
 
-	Map<String,Integer> loadWords(ArrayList<String> words);
+	Map<String, Integer> loadWords(ArrayList<String> words);
 	
 	void addWordCounts(Map<String, Integer> words, String text);
 	
