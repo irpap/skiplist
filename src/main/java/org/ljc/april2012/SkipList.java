@@ -30,16 +30,15 @@ public class SkipList<T> {
         if (possiblePromotions.isEmpty()) {
             SkipListNode newTop = createSingletonList(newNode, lastCreatedNode);
             promoteToToplist(newTop);
-            return;
+        } else {
+            //horizontal insertion
+            SkipListNode nodeToInsertAfter = possiblePromotions.pop();
+            SkipListNode next = linkToPreviousNode(newNode, nodeToInsertAfter);
+            if (next != null) next.prev = newNode;
+
+            //vertical insertion
+            linkToNodeBelow(newNode, lastCreatedNode);
         }
-        //horizontal insertion
-        SkipListNode nodeToInsertAfter = possiblePromotions.pop();
-        SkipListNode next = linkToPreviousNode(newNode, nodeToInsertAfter);
-        if (next != null) next.prev = newNode;
-
-        //vertical insertion
-        linkToNodeBelow(newNode, lastCreatedNode);
-
         //The node we just created will be the node below for the next promotion
         if (flipCoin()) {
             insertAndMaybePromote(value, possiblePromotions, newNode);
