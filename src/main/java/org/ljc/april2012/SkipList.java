@@ -34,8 +34,6 @@ public class SkipList<T> {
             //horizontal insertion
             SkipListNode nodeToInsertAfter = possiblePromotions.pop();
             SkipListNode next = linkToPreviousNode(newNode, nodeToInsertAfter);
-            if (next != null) next.prev = newNode;
-
             //vertical insertion
             linkToNodeBelow(newNode, lastCreatedNode);
         }
@@ -50,6 +48,7 @@ public class SkipList<T> {
         nodeToInsertAfter.next = newNode;
         newNode.prev = nodeToInsertAfter;
         newNode.next = next;
+        if (next != null) next.prev = newNode;
         return next;
     }
 
